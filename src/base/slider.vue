@@ -3,10 +3,10 @@
     <v-touch v-on:panleft="panLeft" v-on:panright="panRight">
       <div v-if="isLoad" class="slider-group">
         <a  class="slider-link" :href="slideData[nowIndex].linkUrl">
-          <transition name="slide-trans">
+          <transition :name="slideTrans">
             <img v-if="isShow" class="slider-img" :src="slideData[nowIndex].picUrl"/>
           </transition>
-          <transition name="slide-trans-old">
+          <transition :name="slideTransOld">
             <img v-if="!isShow" class="slider-img" :src="slideData[nowIndex].picUrl"/>
           </transition>
         </a>
@@ -30,7 +30,9 @@ export default {
       slideInterval: '',
       isLoad: false,
       isShow: true,
-      delay: false
+      delay: false,
+      slideTrans: 'slide-trans-left',
+      slideTransOld: 'slide-trans-left-old'
     }
   },
   props: {
@@ -43,6 +45,7 @@ export default {
   watch: {
     slideData () {
       if (this.slideData !== '') {
+        console.log('onwatch')
         this.isLoad = true
         this.slideShow()
       }
@@ -53,7 +56,10 @@ export default {
   },
   methods: {
     slideShow () {
+      console.log('onslide')
       let len = this.slideData.length
+      this.slideTrans = 'slide-trans-left'
+      this.slideTransOld = 'slide-trans-left-old'
       if (this.slideInterval === null) {
         return
       }
@@ -70,11 +76,12 @@ export default {
       }, this.interval)
     },
     pauseShow () {
-      clearTimeout(this.slideInterval)
+      clearInterval(this.slideInterval)
     },
-    panLeft () {
+    // 上一页
+    panRight () {
       let that = this
-      this.pauseShow()
+      // this.pauseShow()
       if (this.delay === true) {
         setTimeout(() => {
           this.delay = false
@@ -83,9 +90,10 @@ export default {
         this.delay = true
         fallback()
       }
-      this.slideShow()
       function fallback () {
         console.log('fallback')
+        that.slideTrans = 'slide-trans-right'
+        that.slideTransOld = 'slide-trans-right-old'
         that.isShow = false
         setTimeout(() => {
           let len = that.slideData.length
@@ -95,12 +103,14 @@ export default {
             that.nowIndex = len - 1
           }
           that.isShow = true
+          // that.slideShow()
         }, 10)
       }
     },
-    panRight () {
+    // 下一页
+    panLeft () {
       let that = this
-      this.pauseShow()
+      // this.pauseShow()
       if (this.delay === true) {
         setTimeout(() => {
           this.delay = false
@@ -109,7 +119,7 @@ export default {
         this.delay = true
         ahead()
       }
-      this.slideShow()
+      // this.slideShow()
       function ahead () {
         console.log('onahead')
         that.isShow = false
@@ -167,14 +177,24 @@ export default {
   .active{
     background-color: #76b900;
   }
-  .slide-trans-enter-active{
+  .slide-trans-right-enter-active{
     transition: all .5s;
   }
-  .slide-trans-enter{
+  .slide-trans-right-enter{
     transform:translate(-100%)
   }
-  .slide-trans-old-leave-active{
+  .slide-trans-right-old-leave-active{
     transition: all .5s;
     transform: translateX(100%);
   }
+.slide-trans-left-enter-active{
+  transition: all .5s;
+}
+.slide-trans-left-enter{
+  transform:translate(100%)
+}
+.slide-trans-left-old-leave-active{
+  transition: all .5s;
+  transform: translateX(-100%);
+}
 </style>
