@@ -58,12 +58,12 @@ export default {
     slideShow () {
       console.log('onslide')
       let len = this.slideData.length
-      this.slideTrans = 'slide-trans-left'
-      this.slideTransOld = 'slide-trans-left-old'
       if (this.slideInterval === null) {
         return
       }
       this.slideInterval = setInterval(() => {
+        this.slideTrans = 'slide-trans-left'
+        this.slideTransOld = 'slide-trans-left-old'
         this.isShow = false
         setTimeout(() => {
           if (this.nowIndex < len - 1) {
@@ -81,7 +81,7 @@ export default {
     // 上一页
     panRight () {
       let that = this
-      // this.pauseShow()
+      this.pauseShow()
       if (this.delay === true) {
         setTimeout(() => {
           this.delay = false
@@ -90,12 +90,13 @@ export default {
         this.delay = true
         fallback()
       }
+      this.slideShow()
       function fallback () {
         console.log('fallback')
-        that.slideTrans = 'slide-trans-right'
         that.slideTransOld = 'slide-trans-right-old'
         that.isShow = false
         setTimeout(() => {
+          that.slideTrans = 'slide-trans-right'
           let len = that.slideData.length
           if (that.nowIndex !== 0) {
             that.nowIndex--
@@ -103,14 +104,13 @@ export default {
             that.nowIndex = len - 1
           }
           that.isShow = true
-          // that.slideShow()
         }, 10)
       }
     },
     // 下一页
     panLeft () {
       let that = this
-      // this.pauseShow()
+      this.pauseShow()
       if (this.delay === true) {
         setTimeout(() => {
           this.delay = false
@@ -119,7 +119,7 @@ export default {
         this.delay = true
         ahead()
       }
-      // this.slideShow()
+      this.slideShow()
       function ahead () {
         console.log('onahead')
         that.isShow = false
