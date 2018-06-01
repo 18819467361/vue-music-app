@@ -1,12 +1,22 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <m-header></m-header>
+    <tab></tab>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+
   </div>
 </template>
 
 <script>
+import MHeader from 'components/m-header/m-header'
+import Tab from 'components/tab/tab.vue'
 export default {
+  components: {
+    MHeader,
+    Tab
+  },
   name: 'App'
 }
 </script>
@@ -18,6 +28,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
 }
 </style>
