@@ -6,9 +6,13 @@ import router from './router'
 import 'babel-polyfill'
 import fastclick from 'fastclick'
 import VueTouch from 'vue-touch'
+import VueLazyLoad from 'vue-lazyload'
 fastclick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(VueTouch, {name: 'v-touch'})
+Vue.use(VueLazyLoad, {
+  loading: require('./assets/lazyload.jpg')
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

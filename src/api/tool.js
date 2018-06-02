@@ -1,10 +1,26 @@
 import fetchJsonp from 'fetch-jsonp'
 
-function fetchData (url, dataObj, callback) {
+function fetchData1 (url, dataObj, callback) {
   url += (url.indexOf('?') < 0 ? '?' : '&') + param(dataObj)
   // console.log('on fetch')
   fetchJsonp(url, {
-    jsonpCallbackFunction: 'jsonp1' // 定义返回的数据以jsonp1函数包裹
+    jsonpCallback: 'jsonpCallback' // 定义返回的数据以jsonp1函数包裹
+    // jsonpCallback: 'callback' // 定c义返回的数据以jsonp1函数包裹
+  })
+    .then(function (response) {
+      return response.json()
+    }).then(function (json) {
+      callback(json)
+    }).catch(function (err) {
+      console.log('parseing failed', err)
+    })
+}
+function fetchData2 (url, dataObj, callback) {
+  url += (url.indexOf('?') < 0 ? '?' : '&') + param(dataObj)
+  // console.log('on fetch')
+  fetchJsonp(url, {
+    // jsonpCallback: 'jsonpCallback'// 定义返回的数据以jsonp1函数包裹
+    jsonpCallback: 'callback' // 定c义返回的数据以jsonp1函数包裹
   })
     .then(function (response) {
       return response.json()
@@ -25,5 +41,6 @@ function param (dataObj) {
 }
 
 export default {
-  fetchData
+  fetchData1,
+  fetchData2
 }

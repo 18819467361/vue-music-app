@@ -25,6 +25,7 @@ export default {}
     background-color: #fafafc;
     display: flex;
     justify-content: space-around;
+    margin-bottom: 4px;
   }
 
   .tab-item {

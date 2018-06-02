@@ -3,8 +3,9 @@
     <v-touch v-on:panleft="panLeft" v-on:panright="panRight">
       <div v-if="isLoad" class="slider-group">
         <a  class="slider-link" :href="slideData[nowIndex].linkUrl">
+          <img @load="loadImg" class="clearAbs" :src="slideData[0].picUrl"/>
           <transition :name="slideTrans">
-            <img v-if="isShow" class="slider-img" :src="slideData[nowIndex].picUrl"/>
+            <img v-if="isShow" class="slider-img needsclick" :src="slideData[nowIndex].picUrl"/>
           </transition>
           <transition :name="slideTransOld">
             <img v-if="!isShow" class="slider-img" :src="slideData[nowIndex].picUrl"/>
@@ -45,7 +46,6 @@ export default {
   watch: {
     slideData () {
       if (this.slideData !== '') {
-        console.log('onwatch')
         this.isLoad = true
         this.slideShow()
       }
@@ -55,8 +55,8 @@ export default {
 
   },
   methods: {
+    // 自动轮播
     slideShow () {
-      console.log('onslide')
       let len = this.slideData.length
       if (this.slideInterval === null) {
         return
@@ -75,6 +75,7 @@ export default {
         }, 10)
       }, this.interval)
     },
+    // 停止轮播
     pauseShow () {
       clearInterval(this.slideInterval)
     },
@@ -92,7 +93,6 @@ export default {
       }
       this.slideShow()
       function fallback () {
-        console.log('fallback')
         that.slideTransOld = 'slide-trans-right-old'
         that.isShow = false
         setTimeout(() => {
@@ -121,9 +121,10 @@ export default {
       }
       this.slideShow()
       function ahead () {
-        console.log('onahead')
+        that.slideTransOld = 'slide-trans-left-old'
         that.isShow = false
         setTimeout(() => {
+          that.slideTrans = 'slide-trans-left'
           let len = that.slideData.length
           if (that.nowIndex < len - 1) {
             that.nowIndex++
@@ -133,7 +134,14 @@ export default {
           that.isShow = true
         }, 10)
       }
+    },
+    loadImg () {
+      console.log('slideload')
+      this.$emit('img-load')
     }
+  },
+  destroyed () {
+    clearTimeout(this.slideInterval)
   }
 }
 </script>
@@ -149,11 +157,12 @@ export default {
   display: block;
   width:100%;
   white-space: nowrap;
-  height:140px;
 }
 .slider-img{
   width:100%;
   position: absolute;
+  top:0;
+  left:0;
 }
   .dots-wrapper{
     position: absolute;
@@ -161,6 +170,13 @@ export default {
     left:50%;
     display: flex;
     justify-content: center;
+  }
+  .clearAbs{
+    display: block;
+    position: relative;
+    width:100%;
+    visibility: hidden;
+    z-index: -1;
   }
   .dots{
     transform:translate(-50%,0) ;
