@@ -15,7 +15,7 @@ function fetchData1 (url, dataObj, callback) {
       console.log('parseing failed', err)
     })
 }
-function fetchData2 (url, dataObj, callback) {
+function fetchData2 (url, dataObj, name, index, callback) {
   url += (url.indexOf('?') < 0 ? '?' : '&') + param(dataObj)
   fetchJsonp(url, {
     jsonpCallback: 'callback' // 定c义返回的数据以jsonp1函数包裹
@@ -23,7 +23,7 @@ function fetchData2 (url, dataObj, callback) {
     .then(function (response) {
       return response.json()
     }).then(function (json) {
-      callback(json)
+      callback(json, name, index)
     }).catch(function (err) {
       console.log('parseing failed', err)
     })

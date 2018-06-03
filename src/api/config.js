@@ -45,7 +45,7 @@ export const singersNav = {
   index: [
     {
       id: -100,
-      name: '热'
+      name: '热门'
     },
     {
       id: 1,

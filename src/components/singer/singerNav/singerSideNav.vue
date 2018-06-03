@@ -1,12 +1,13 @@
 <template>
   <div class="side-nav-wrapper">
     <ul class="side-nav">
-      <li v-for="(item, index) in singersIndex" @click="getIndex(item)" :key="index" :class="['side-nav-bar',{'active':item.id===indexId}]">{{item.name}}</li>
+      <li v-for="(item, index) in singersIndex" @touchstart="onShortcutTouchStart" @click="getIndex(item)" :data-index="index" :key="index" :class="['side-nav-bar',{'active':item.id===indexId}]">{{item.name.substring(0,1)}}</li>
     </ul>
   </div>
 </template>
 <script type="text/ecmascript-6">
-import {singersNav} from '@/api/config.js'
+import { singersNav } from '@/api/config.js'
+import { getData } from '@/api/dom'
 export default {
   data () {
     return {
@@ -18,7 +19,12 @@ export default {
     getIndex (item) {
       this.indexId = item.id
       this.$emit('change-index', item.id)
+    },
+    onShortcutTouchStart (e) {
+      let anchorIndex = getData(e.target, 'index')
+      this.$emit('scroll', anchorIndex)
     }
+
   }
 }
 </script>
