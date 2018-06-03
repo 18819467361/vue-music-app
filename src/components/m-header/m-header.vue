@@ -16,6 +16,7 @@ export default {}
   justify-content:center;
   align-items: center;
   background-color: #bc2f2e;
+  flex-grow: 2;
 }
 .icon{
   width:40px;

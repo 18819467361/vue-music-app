@@ -35,7 +35,12 @@ export default {
     padding:0;
     margin:0;
   }
+  ul,li{
+    list-style: none;
+  }
   .header{
     height:14vh;
+    display: flex;
+    flex-direction: column;
   }
 </style>

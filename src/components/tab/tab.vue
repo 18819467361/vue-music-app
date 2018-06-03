@@ -26,9 +26,12 @@ export default {}
     display: flex;
     justify-content: space-around;
     margin-bottom: 4px;
+    flex-grow: 1;
   }
 
   .tab-item {
+    display: flex;
+    align-items: center;
     font-size: 16px;
     color: #000000;
     font-family: "Microsoft Himalaya",sans-serif;

@@ -17,9 +17,7 @@ function fetchData1 (url, dataObj, callback) {
 }
 function fetchData2 (url, dataObj, callback) {
   url += (url.indexOf('?') < 0 ? '?' : '&') + param(dataObj)
-  // console.log('on fetch')
   fetchJsonp(url, {
-    // jsonpCallback: 'jsonpCallback'// 定义返回的数据以jsonp1函数包裹
     jsonpCallback: 'callback' // 定c义返回的数据以jsonp1函数包裹
   })
     .then(function (response) {
