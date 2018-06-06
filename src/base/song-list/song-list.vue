@@ -14,16 +14,12 @@
 export default {
   props: {
     songs: {
-      type: Array,
-      default: []
+      type: Array
     }
   },
   methods: {
     getDesc (song) {
       return `${song.singer} ,${song.album}`
-    },
-    test () {
-      console.log('click')
     }
   }
 }

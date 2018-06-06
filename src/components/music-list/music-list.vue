@@ -19,7 +19,7 @@
         <div ref="fixScroll"></div>
       </div>
     </scroll>
-    <div class="loading-container" v-show="!songs.length">
+    <div class="loading-container" v-if="!songs.length">
       <loading title="正在加载中..."></loading>
     </div>
   </div>
@@ -30,7 +30,7 @@ import SongList from '@/base/song-list/song-list'
 import {prefixStyle} from '@/api/dom'
 import Loading from '@/base/loading/loading'
 const transform = prefixStyle('transform')
-const backdrop = prefixStyle('backdrop-filter')
+// const backdrop = prefixStyle('backdrop-filter')
 export default {
   data () {
     return {
@@ -86,14 +86,14 @@ export default {
     scrollY (newY) {
       this.imgHeight = this.$refs.bgImg.clientHeight
       let scale = 1
-      let blur = 0
+      // let blur = 0
       if (newY > 0) {
         scale = 1 + newY / this.imgHeight
       } else {
         scale = 1
-        blur = Math.min(20 * newY / this.imgHeight, 20)
+        // let blur = Math.min(20 * newY / this.imgHeight, 20)
       }
-      this.$refs.filter.style[backdrop] = `blur({$blur}px)`
+      // this.$refs.filter.style[backdrop] = `blur({$blur}px)`
       this.$refs.bgImg.style[transform] = `scale(${scale})`
     }
   }
@@ -179,6 +179,7 @@ export default {
     justify-content: center;
     z-index: 100;
     background-color: transparent;
+    pointer-events: none;
   }
 
 </style>

@@ -5,9 +5,6 @@
         <div class="slider-wrapper">
           <slider :slideData=recommends.slider @img-load="loadImage"></slider>
         </div>
-        <div class="loading-container">
-          <loading v-if="!discList.length" title="正在载入..."></loading>
-        </div>
         <div v-if='discList.length' class="recommend-list">
           <h1 class="list-title">热门MV推荐</h1>
           <ul class="mv-wrapper">
@@ -18,6 +15,9 @@
               </div>
             </li>
           </ul>
+        </div>
+        <div v-show="!discList.length" class="loading-container">
+        <loading title="正在载入..."></loading>
         </div>
       </div>
     </scroll>
@@ -88,7 +88,9 @@ export default {
 .list-title{
   font-size: 16px;
   font-weight: bold;
+  text-align: center;
   color: #000;
+  background-color: transparent;
 }
 
 .mv-wrapper{
@@ -117,7 +119,5 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    background-color: transparent;
   }
 </style>

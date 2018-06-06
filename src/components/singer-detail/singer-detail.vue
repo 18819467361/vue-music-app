@@ -31,7 +31,7 @@ export default {
     MusicList
   },
   created () {
-    console.log(this.singer,'singer')
+    console.log(this.singer, 'singer')
     this._fetchSingerDetail(this.singer['singer_mid'], this.getDetailData)
   },
   methods: {

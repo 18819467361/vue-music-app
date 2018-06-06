@@ -1,6 +1,6 @@
 <template>
   <div class="slider">
-    <v-touch v-on:panleft="panLeft" v-on:panright="panRight">
+    <v-touch @click="test" v-on:panleft="panLeft" v-on:panright="panRight">
       <div v-if="isLoad" class="slider-group">
         <a  class="slider-link" :href="slideData[nowIndex].linkUrl">
           <img @load="loadImg" class="clearAbs" :src="slideData[0].picUrl"/>
@@ -138,6 +138,9 @@ export default {
     loadImg () {
       console.log('slideload')
       this.$emit('img-load')
+    },
+    test () {
+      console.log('click')
     }
   },
   destroyed () {
