@@ -1,18 +1,18 @@
 <template>
   <div class="singers-wrapper">
     <top-nav @change-area="resetArea"></top-nav>
-    <view-list :data="singers"></view-list>
-    <!--<side-nav @change-index="resetIndex"></side-nav>-->
+    <view-list @select="selectSinger" :data="singersFull"></view-list>
+    <router-view></router-view>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import {fetchSingerList} from '../../api/singer.js'
 import {ERR_OK, singersNav} from '@/api/config'
-//import SideNav from './singerNav/singerSideNav.vue'
 import TopNav from './singerNav/singerTopNav.vue'
 import ViewList from '@/base/listview/listview.vue'
 import Vue from 'vue'
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -23,9 +23,15 @@ export default {
     }
   },
   components: {
-//    SideNav,
     TopNav,
     ViewList
+  },
+  computed: {
+    singersFull: function () {
+      if (this.singers.length === 28) {
+        return this.singers
+      }
+    }
   },
   created () {
     this._fetchSingerList(this.setSingers, this.index)
@@ -42,16 +48,23 @@ export default {
         Vue.set(this.singers, index, {'name': '', 'data': ''})
         this.singers[index]['name'] = name
         this.singers[index]['data'] = data.singerList.data.singerlist
-//        console.log(this.singers, 'singers')
       }
-      // console.log(data, 'data')
     },
     resetArea (areaId) {
       this.areaId = areaId
     },
     resetIndex (index) {
       this.index = index
-    }
+    },
+    selectSinger (singer) {
+      this.setSinger(singer)
+      this.$router.push({
+        path: `/singer/${singer.singer_id}`
+      })
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   },
   watch: {
     areaId () {

@@ -31,7 +31,7 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-  body,h1,h2,h3,span,ul,li,ol{
+  body,h1,h2,h3,span,ul,li,ol,p{
     padding:0;
     margin:0;
   }
@@ -43,4 +43,18 @@ export default {
     display: flex;
     flex-direction: column;
   }
+@font-face {
+  font-family: 'iconfont';  /* project id 638204 */
+  src: url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.eot');
+  src: url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.svg#iconfont') format('svg');
+}
+.iconfont{
+  font-family:"iconfont" !important;
+  font-size:16px;font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;}
 </style>

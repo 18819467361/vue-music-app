@@ -1,14 +1,17 @@
 <template>
   <div class="contain">
-    <scroll class="singer-list-wrapper" :data="data" ref="listView">
+    <scroll class="singer-list-wrapper" :data="data" ref="listView"
+            :listenScroll="listenScroll"
+            :probeType="probeType"
+            @scroll="scroll">
       <ul class="list-content">
         <li v-for="(group, index) in data" :key="index" ref="listGroup">
-          <h2 class="list-title">{{group.name}}</h2>
+          <h2 class="list-title" v-if="group">{{group.name}}</h2>
           <ul>
-            <li v-for="(item, index1) in group.data" :key="index1">
+            <li v-for="(item, index1) in group.data" @click="selectItem(item)" :key="index1">
               <div class="singer-list">
               <div v-if="index ===0" class="img-wrapper">
-              <img class="singer-img" :src="item.singer_pic"/>
+              <img class="singer-img" v-lazy="item.singer_pic"/>
               </div>
               <h3 :class="[{'singer-name':index === 0},{'small':index !==0}]">{{item.singer_name}}</h3>
               </div>
@@ -16,11 +19,19 @@
           </ul>
         </li>
       </ul>
+      <div class="list-fixed">
+      </div>
+      <h1 class="fixed-title" ref="fixed" v-show="fixedTitle">{{fixedTitle}}</h1>
     </scroll>
     <div class="side-nav-wrapper">
       <ul class="side-nav">
-        <li v-for="(item, index3) in singersIndex" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove" @click="getIndex(item)" :data-index="index3" :key="index3" :class="['side-nav-bar',{'active-side-list':item.id===indexId}]">{{item.name.substring(0,1)}}</li>
+        <li v-for="(item, index3) in singersIndex" @touchstart="onShortcutTouchStart"
+            @touchmove.stop.prevent="onShortcutTouchMove" @click="getIndex(item)" :data-index="index3"
+            :key="index3" :class="['side-nav-bar',{'active-side-list':index3===currentIndex}]">{{item.name.substring(0,1)}}</li>
       </ul>
+    </div>
+    <div  v-show="!data.length" class="loading-container">
+      <loading title="正在载入..."></loading>
     </div>
   </div>
 </template>
@@ -28,15 +39,23 @@
 import Scroll from '@/base/scroll/scroll'
 import { singersNav } from '@/api/config'
 import { getData } from '@/api/dom'
+import Loading from '@/base/loading/loading'
 const ANCHOR_HEIGHT = 14
+const TITLE_HEIGHT = 24
 export default {
   created () {
     this.touch = {}
+    this.listenScroll = true
+    this.listHeight = []
+    this.probeType = 3
   },
   data () {
     return {
       singersIndex: singersNav.index,
-      indexId: -100
+      indexId: -100,
+      scrollY: -1,
+      currentIndex: 0,
+      diff: ''
     }
   },
   props: {
@@ -45,8 +64,53 @@ export default {
       defalut: []
     }
   },
+  computed: {
+    fixedTitle () {
+      if (this.scrollY > 0) {
+        return ''
+      }
+      return this.data[this.currentIndex] ? this.data[this.currentIndex].name : ''
+    }
+  },
   components: {
-    Scroll
+    Scroll,
+    Loading
+  },
+  watch: {
+    data () {
+      setTimeout(() => {
+        this._calculateHeight()// data变化导致dom变化，实时更新高度，数据变化到dom变化有延时，因此延时20ms调用。
+      }, 20)
+    },
+    scrollY (newY) {
+      const listHeight = this.listHeight
+      // 当滚动到顶部newY>0
+      if (newY > 0) {
+        this.currentIndex = 0
+        return
+      }
+      // 当在中间部分滚动
+      for (let i = 0; i < listHeight.length - 1; i++) {
+        let height1 = listHeight[i]
+        let height2 = listHeight[i + 1]
+        if (-newY >= height1 && -newY < height2) {
+          this.currentIndex = i
+          this.diff = height2 + newY
+          return
+        }
+      }
+      // 当滚动到底部，且-newY大于最后一个元素的上限
+      this.currentIndex = listHeight.length - 2
+    },
+    diff (newVal) {
+      let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+      /* 减少dom操作频率 */
+      if (this.fixedTop === fixedTop) {
+        return
+      }
+      this.fixedTop = fixedTop
+      this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
+    }
   },
   methods: {
     getIndex (item) {
@@ -63,12 +127,32 @@ export default {
       let firstTouch = e.touches[0]
       this.touch.y2 = firstTouch.pageY
       let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
-      console.log(this.touch.anchorIndex + delta,'string')
       let anchorIndex = parseInt(this.touch.anchorIndex) + delta
       this._scrollTo(anchorIndex)
     },
     _scrollTo (index) {
+      if (!index && index !== 0) {
+        return
+      }
+      this.scrollY = -this.listHeight[index]
       this.$refs.listView.scrollToElement(this.$refs.listGroup[index], 0)
+    },
+    scroll (pos) {
+      this.scrollY = pos.y
+    },
+    _calculateHeight () {
+      this.listHeight = []
+      const list = this.$refs.listGroup// 获取所有listGroup的dom
+      let height = 0
+      this.listHeight.push(height)
+      for (let i = 0; i < list.length; i++) {
+        let item = list[i]
+        height += item.scrollHeight
+        this.listHeight.push(height)
+      }
+    },
+    selectItem (item) {
+      this.$emit('select', item)
     }
   }
 }
@@ -85,7 +169,7 @@ export default {
  .list-title{
    text-align: left;
    padding:4px 0 4px 10px;
-   margin:2px 0vh 6px 4px;
+   margin:0 3vh 6px 4px;
    background-color: #ca7374;
    font:bold 16px/16px sans-serif;
    color: #fff;
@@ -123,6 +207,10 @@ export default {
     position: fixed;
     top:14vh;
     right:5px;
+    height:84vh;
+    background-color: #eaeaea;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px #9c9c9c;
   }
   .side-nav-bar{
     margin:2px 0;
@@ -132,5 +220,35 @@ export default {
   .active-side-list{
     background-color: brown;
     color: #fff;
+  }
+  .fixed-title{
+    position: absolute;
+    top: 0;
+    left:0;
+    width: 94vw;
+    text-align: left;
+    padding:4px 0 4px 10px;
+    margin:0 3vh 6px 4px;
+    background-color: #ca7374;
+    font:bold 16px/16px sans-serif;
+    color: #fff;
+  }
+  .loading-container {
+    width:100px;
+    height:200px;
+    background-color: red;
+  }
+  .loading-container{
+    position: absolute;
+    background-color: #76b900;
+    top:0;
+    left:0;
+    width: 100vw;
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    /*background-color: transparent;*/
   }
 </style>

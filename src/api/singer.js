@@ -14,3 +14,21 @@ export function fetchSingerList (area, idObj, index, callback) {
   })
   return fetch.fetchData2(url, data, idObj.name, index, callback)
 }
+export function fetchSingerDetail (singerId, callback) {
+  const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
+  const data = Object.assign({}, commonParams, {
+    g_tk: 1215922553,
+    loginUin: '251961612',
+    inCharset: 'utf8',
+    hostUin: '0',
+    format: 'jsonp',
+    platform: 'yqq',
+    needNewCode: '0',
+    singermid: singerId,
+    order: 'listen',
+    begin: '0',
+    num: '30',
+    songstatus: 1
+  })
+  return fetch.fetchData1(url, data, callback)
+}

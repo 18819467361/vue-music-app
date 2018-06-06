@@ -7,6 +7,7 @@ import 'babel-polyfill'
 import fastclick from 'fastclick'
 import VueTouch from 'vue-touch'
 import VueLazyLoad from 'vue-lazyload'
+import store from './store/index.js'
 fastclick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(VueTouch, {name: 'v-touch'})
@@ -16,6 +17,7 @@ Vue.use(VueLazyLoad, {
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'
