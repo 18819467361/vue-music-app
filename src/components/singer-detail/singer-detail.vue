@@ -10,6 +10,7 @@ import {fetchSingerDetail} from '@/api/singer'
 import {ERR_OK} from '@/api/config'
 import { createSong } from '@/api/song'
 import MusicList from '@/components/music-list/music-list'
+import addUrl from '@/api/songUrl'
 export default {
   data () {
     return {
@@ -31,7 +32,7 @@ export default {
     MusicList
   },
   created () {
-    console.log(this.singer, 'singer')
+    console.log(this.singer, 'singer````')
     this._fetchSingerDetail(this.singer['singer_mid'], this.getDetailData)
   },
   methods: {
@@ -43,16 +44,16 @@ export default {
       fetchSingerDetail(singerID, callback)
     },
     getDetailData (res) {
+      console.log(res, 'vrital data')
       if (res.code === ERR_OK) {
         this.songList = this._normalizeSongs(res.data.list)
-        console.log(this.songList, 'songlist')
       }
+      addUrl(this.songList) // 设置song的URL
     },
     _normalizeSongs (list) {
       let ret = []
       list.forEach((item) => {
         let {musicData} = item
-        // console.log(musicData, 'musicdata')
         if (musicData.strMediaMid && musicData.singer[0].mid) {
           ret.push(createSong(musicData))
         }

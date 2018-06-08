@@ -54,7 +54,6 @@ export default {
   },
   computed: {
     bgStyle () {
-      console.log(this.bgImage, 'bgimage')
       return `background-image:url(${this.bgImage})`
     }
   },

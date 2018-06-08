@@ -194,7 +194,7 @@ export default {
     display: inline-block;
   }
   .active{
-    background-color: #76b900;
+    /*background-color: #76b900;*/
   }
   .slide-trans-right-enter-active{
     transition: all .5s;

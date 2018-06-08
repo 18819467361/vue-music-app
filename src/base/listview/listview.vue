@@ -1,12 +1,12 @@
 <template>
-  <div class="contain">
+  <div  class="contain">
     <scroll class="singer-list-wrapper" :data="data" ref="listView"
             :listenScroll="listenScroll"
             :probeType="probeType"
             @scroll="scroll">
       <ul class="list-content">
         <li v-for="(group, index) in data" :key="index" ref="listGroup">
-          <h2 class="list-title" v-if="group">{{group.name}}</h2>
+          <h2 class="list-title">{{group.name}}</h2>
           <ul>
             <li v-for="(item, index1) in group.data" @click="selectItem(item)" :key="index1">
               <div class="singer-list">
@@ -30,7 +30,7 @@
             :key="index3" :class="['side-nav-bar',{'active-side-list':index3===currentIndex}]">{{item.name.substring(0,1)}}</li>
       </ul>
     </div>
-    <div  v-show="!data.length" class="loading-container">
+    <div v-if="!data.length" class="loading-container">
       <loading title="正在载入..."></loading>
     </div>
   </div>
@@ -77,6 +77,9 @@ export default {
     Loading
   },
   watch: {
+    render (newRender) {
+      console.log(newRender, 'render')
+    },
     data () {
       setTimeout(() => {
         this._calculateHeight()// data变化导致dom变化，实时更新高度，数据变化到dom变化有延时，因此延时20ms调用。
@@ -240,7 +243,6 @@ export default {
   }
   .loading-container{
     position: absolute;
-    background-color: #76b900;
     top:0;
     left:0;
     width: 100vw;

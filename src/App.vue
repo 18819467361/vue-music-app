@@ -46,12 +46,12 @@ export default {
     flex-direction: column;
   }
 @font-face {
-  font-family: 'iconfont';  /* project id 638204 */
-  src: url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.eot');
-  src: url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.woff') format('woff'),
-  url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_638204_4gd6lxwuu5scq5mi.svg#iconfont') format('svg');
+  font-family: 'iconfont';  /* project id 697934 */
+  src: url('//at.alicdn.com/t/font_697934_ezrkz29z07ywg66r.eot');
+  src: url('//at.alicdn.com/t/font_697934_ezrkz29z07ywg66r.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_697934_ezrkz29z07ywg66r.woff') format('woff'),
+  url('//at.alicdn.com/t/font_697934_ezrkz29z07ywg66r.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_697934_ezrkz29z07ywg66r.svg#iconfont') format('svg');
 }
 .iconfont{
   font-family:"iconfont" !important;
