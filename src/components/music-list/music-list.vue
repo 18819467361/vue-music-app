@@ -5,18 +5,18 @@
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImg">
-      <div class="play-wrapper">
-        <div class="play" v-show="songs.length>0">
-          <i class="icon-play iconfont">&#xe680;</i>
-          <span class="text">随机播放全部</span>
-        </div>
-      </div>
       <div class="filter" ref="filter"></div>
     </div>
     <scroll @scroll="scroll" :probe-type="probeType" :listen-scroll="listenScroll" :data="songs" class="list" ref="list">
       <div class="song-list-wrapper">
         <song-list :songs="songs" @select="selectItem"></song-list>
         <div ref="fixScroll"></div>
+      </div>
+      <div class="play-wrapper">
+        <div class="play" v-show="songs.length>0" @click="random">
+          <i class="icon-play iconfont">&#xe680;</i>
+          <span class="text">随机播放全部</span>
+        </div>
       </div>
     </scroll>
     <div class="loading-container" v-if="!songs.length">
@@ -31,6 +31,7 @@ import {prefixStyle} from '@/api/dom'
 import Loading from '@/base/loading/loading'
 import {mapActions} from 'vuex'
 const transform = prefixStyle('transform')
+const MINI_PLAYER_HEIGHT = 60
 // const backdrop = prefixStyle('backdrop-filter')
 export default {
   data () {
@@ -69,7 +70,7 @@ export default {
   mounted () {
     this.imgHeight = this.$refs.bgImg.clientHeight
     let padTop = this.imgHeight - 45
-    let fixBot = padTop + this.imgHeight
+    let fixBot = padTop + this.imgHeight + MINI_PLAYER_HEIGHT
     this.$refs.list.$el.style.paddingTop = `${padTop}px`
     this.$refs.list.$el.style.top = `45px`
     this.$refs.fixScroll.style.height = `${fixBot}px`
@@ -87,8 +88,15 @@ export default {
         index: index
       })
     },
+    random () {
+      console.log('random')
+      this.randomPlay({
+        list: this.songs
+      })
+    },
     ...mapActions([
-      'selectPlay'
+      'selectPlay',
+      'randomPlay'
     ])
   },
   watch: {
@@ -144,6 +152,7 @@ export default {
 }
   .play-wrapper{
     position: absolute;
+    top: 160px;
     bottom: 4vh;
     left:50%;
     width:150px;
@@ -155,6 +164,7 @@ export default {
     border: 1px solid #bc2f2e;
     color: #c7c7c7;
     text-shadow: 1px 1px 1px #bdbdbd;
+    z-index: -1;
   }
   .icon-play{
     color: #bc2f2e;
