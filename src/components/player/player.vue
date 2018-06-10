@@ -338,7 +338,6 @@ export default {
     },
     handleLyric ({lineNum, txt}) {
       this.currentLineNum = lineNum
-      console.log(lineNum, 'number')
       if (lineNum > 5) {
         let lineEl = this.$refs.lyricLine[lineNum - 5]
         this.$refs.lyricList.scrollToElement(lineEl, 1000)
@@ -361,14 +360,12 @@ export default {
       }
     },
     middleTouchStart (e) {
-      console.log('touch-start')
       this.touch.initiated = true
       const touch = e.touches[0]
       this.touch.startX = touch.pageX
       this.touch.startY = touch.pageY
     },
     middleTouchMove (e) {
-      console.log('touch-move')
       if (!this.touch.initiated) {
         return
       }

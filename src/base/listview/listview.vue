@@ -1,11 +1,11 @@
 <template>
-  <div  class="contain">
+  <div v-if="fixedData" class="contain">
     <scroll class="singer-list-wrapper" :data="data" ref="listView"
             :listenScroll="listenScroll"
             :probeType="probeType"
             @scroll="scroll">
       <ul class="list-content">
-        <li v-for="(group, index) in data" :key="index" ref="listGroup">
+        <li v-for="(group, index) in fixedData" :key="index" ref="listGroup">
           <h2 class="list-title">{{group.name}}</h2>
           <ul>
             <li v-for="(item, index1) in group.data" @click="selectItem(item)" :key="index1">
@@ -70,6 +70,17 @@ export default {
         return ''
       }
       return this.data[this.currentIndex] ? this.data[this.currentIndex].name : ''
+    },
+    fixedData () {
+      if (!this.data) {
+        return false
+      }
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.data[i] === undefined) {
+          return false
+        }
+      }
+      return this.data
     }
   },
   components: {
@@ -80,7 +91,7 @@ export default {
     render (newRender) {
       console.log(newRender, 'render')
     },
-    data () {
+    fixedData () {
       setTimeout(() => {
         this._calculateHeight()// data变化导致dom变化，实时更新高度，数据变化到dom变化有延时，因此延时20ms调用。
       }, 20)

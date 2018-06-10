@@ -10,8 +10,8 @@
           <ul class="mv-wrapper">
             <li v-for="(item, index) in discList" class="mv-list" :key="index">
               <div class="mv-content" >
-                <img class="mv-img" v-lazy="item.picurl"/>
-                <h3 class="mv-title">{{item.mvtitle}}</h3>
+                <img class="mv-img" v-lazy="item.imgurl"/>
+                <h3 class="mv-title">{{item.dissname}}</h3>
               </div>
             </li>
           </ul>
@@ -56,7 +56,7 @@ export default {
     _fetchDiscList () {
       fetchDiscList(this.setDiscList).then((res) => {
         if (res.code === ERR_OK) {
-          this.discList = res.data.mvlist
+          this.discList = res.data.list
         }
       })
     },

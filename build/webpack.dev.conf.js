@@ -34,7 +34,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   devServer: {
     before(app){
       app.get('/api/fetchDiscList',function (req, res) {
-        const url = 'https://c.y.qq.com/mv/fcgi-bin/getmv_by_tag'
+        const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
         axios.get(url,{
           headers:{
             referer: 'https://c.y.qq.com/',
