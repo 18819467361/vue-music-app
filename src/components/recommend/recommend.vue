@@ -144,5 +144,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #ffffff;
   }
 </style>

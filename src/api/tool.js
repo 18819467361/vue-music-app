@@ -43,6 +43,23 @@ function fetchData3 (url, dataObj, callback, item) {
       console.log('parseing failed', err)
     })
 }
+function fetchData4 (url, dataObj) {
+  url += (url.indexOf('?') < 0 ? '?' : '&') + param(dataObj)
+  // console.log('on fetch')
+  return fetchJsonp(url, {
+    jsonpCallback: 'jsonpCallback' // 定义返回的数据以jsonp1函数包裹
+    // jsonpCallback: 'callback' // 定c义返回的数据以jsonp1函数包裹
+  })
+    .then(function (response) {
+      return response.json()
+    }).then(function (json) {
+      // console.log(json,'fetchdata')
+      return Promise.resolve(json)
+      // callback(json)
+    }).catch(function (err) {
+      console.log('parseing failed', err)
+    })
+}
 function param (dataObj) {
   let url = ''
   for (let k in dataObj) {
@@ -55,5 +72,6 @@ function param (dataObj) {
 export default {
   fetchData1,
   fetchData2,
-  fetchData3
+  fetchData3,
+  fetchData4
 }
