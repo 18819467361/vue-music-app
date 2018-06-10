@@ -2,7 +2,6 @@
   <transition name="slide">
    <music-list :songs="songList" :title="title" :bg-image="bgImage"></music-list>
   </transition>
-
 </template>
 <script type="text/ecmascript-6">
 import {mapGetters} from 'vuex'

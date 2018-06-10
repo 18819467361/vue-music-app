@@ -13,6 +13,7 @@ import TopNav from './singerNav/singerTopNav.vue'
 import ViewList from '@/base/listview/listview.vue'
 import Vue from 'vue'
 import { mapMutations } from 'vuex'
+
 export default {
   data () {
     return {

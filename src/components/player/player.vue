@@ -27,8 +27,9 @@
                 <img class="image" :src="currentSong.image" />
               </div>
             </div>
+            <div class="playing-lyric">{{playingLyric}}</div>
           </div>
-          <div class="scroll-wrapper middle-r">
+          <div class="scroll-wrapper middle-r" >
             <scroll  ref="lyricList" :data="currentLyric && currentLyric.lines">
               <div class="lyric-wrapper">
                 <div class="lyric" v-if="currentLyric">
@@ -116,7 +117,8 @@ export default {
       radius: 32,
       currentLyric: null,
       currentLineNum: 0,
-      currentShow: 'cd'
+      currentShow: 'cd',
+      playingLyric: ''
     }
   },
   computed: {
@@ -156,10 +158,13 @@ export default {
       if (newSong.id === oldSong.id) {
         return
       }
-      this.$nextTick(() => {
+      if (this.currentLyric) {
+        this.currentLyric.stop()
+      }
+      setTimeout(() => {
         this.$refs.audio.play()
         this.getLyric()
-      })
+      }, 1000)
     },
     // watch playing的变化，控制audio元素的play和pause
     playing (newPlaying) {
@@ -273,6 +278,9 @@ export default {
         return
       }
       this.setPlayingState(!this.playing)
+      if (this.currentLyric) {
+        this.currentLyric.togglePlay()
+      }
     },
     ready () {
       this.songReady = true
@@ -284,14 +292,19 @@ export default {
       if (!this.songReady) {
         return
       }
-      if (this.currentIndex > 0) {
-        this.setCurrentIndex(this.currentIndex - 1)
+      if (this.playlist.length === 1) {
+        this.loop()
       } else {
-        this.setCurrentIndex(this.playlist.length - 1)
+        if (this.currentIndex > 0) {
+          this.setCurrentIndex(this.currentIndex - 1)
+        } else {
+          this.setCurrentIndex(this.playlist.length - 1)
+        }
+        if (!this.playing) {
+          this.setPlayingState(!this.playing)
+        }
       }
-      if (!this.playing) {
-        this.setPlayingState(!this.playing)
-      }
+
       this.songReady = false
     },
     end () {
@@ -304,18 +317,25 @@ export default {
     loop () {
       this.$refs.audio.currentTime = 0
       this.$refs.audio.play()
+      if (this.currentLyric) {
+        this.currentLyric.seek(0)
+      }
     },
     nextSong () {
       if (!this.songReady) {
         return
       }
-      if (this.currentIndex < this.playlist.length - 1) {
-        this.setCurrentIndex(this.currentIndex + 1)
+      if (this.playlist.length === 1) {
+        this.loop()
       } else {
-        this.setCurrentIndex(0)
-      }
-      if (!this.playing) {
-        this.setPlayingState(!this.playing)
+        if (this.currentIndex < this.playlist.length - 1) {
+          this.setCurrentIndex(this.currentIndex + 1)
+        } else {
+          this.setCurrentIndex(0)
+        }
+        if (!this.playing) {
+          this.setPlayingState(!this.playing)
+        }
       }
       this.songReady = false
     },
@@ -334,6 +354,10 @@ export default {
         if (this.playing) {
           this.currentLyric.play()
         }
+      }).catch(() => {
+        this.currentLyric = null
+        this.playingLyric = ''
+        this.currentLineNum = 0
       })
     },
     handleLyric ({lineNum, txt}) {
@@ -344,6 +368,7 @@ export default {
       } else {
         this.$refs.lyricList.scrollTo(0, 0, 1000)
       }
+      this.playingLyric = txt
     },
     _pad (num, n = 2) {
       let len = num.toString().length
@@ -354,9 +379,13 @@ export default {
       return num
     },
     onProgressBarChange (percent) {
-      this.$refs.audio.currentTime = this.currentSong.duration * percent
+      const currentTime = this.currentSong.duration * percent
+      this.$refs.audio.currentTime = currentTime
       if (!this.playing) {
         this.togglePlay()
+      }
+      if (this.currentLyric) {
+        this.currentLyric.seek(currentTime * 1000)
       }
     },
     middleTouchStart (e) {
@@ -501,6 +530,7 @@ export default {
     bottom:170px;
     white-space: nowrap;
     font-size: 0;
+    overflow: visible;
   }
     .middle-l{
       display: inline-block;
@@ -509,6 +539,7 @@ export default {
       width:100%;
       height:0;
       padding-top: 80%;
+      overflow: visible;
     }
       .cd-wrapper{
         position: absolute;
@@ -516,6 +547,18 @@ export default {
         top:0;
         width:80%;
         height:100%;
+      }
+      .playing-lyric{
+        position: absolute;
+        top:110%;
+        left:50%;
+        margin-left: -75px;
+        margin-top: 20px;
+        width:150px;
+        height: 30px;
+        color: #000;
+        font-size: 14px;
+        white-space: pre-wrap;
       }
         .cd{
           width:100%;

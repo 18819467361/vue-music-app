@@ -1,14 +1,14 @@
 <template>
   <div class="recommend">
-    <scroll ref="scroll" class="recommend-content"  :data="discList">
+    <scroll ref="scrollList" class="recommend-content"  :data="discList">
       <div>
         <div class="slider-wrapper">
           <slider :slideData=recommends.slider @img-load="loadImage"></slider>
         </div>
         <div v-if='discList.length' class="recommend-list">
-          <h1 class="list-title">热门MV推荐</h1>
+          <h1 class="list-title">热门歌单推荐</h1>
           <ul class="mv-wrapper">
-            <li v-for="(item, index) in discList" class="mv-list" :key="index">
+            <li @click="selectItem(item)" v-for="(item, index) in discList" class="mv-list" :key="index">
               <div class="mv-content" >
                 <img class="mv-img" v-lazy="item.imgurl"/>
                 <h3 class="mv-title">{{item.dissname}}</h3>
@@ -16,11 +16,13 @@
             </li>
           </ul>
         </div>
+        <div ref="fixHeight"></div>
         <div v-show="!discList.length" class="loading-container">
         <loading title="正在载入..."></loading>
         </div>
       </div>
     </scroll>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -30,12 +32,17 @@ import {ERR_OK} from 'api/config'
 import Slider from '../../base/slider.vue'
 import Scroll from '../../base/scroll/scroll.vue'
 import Loading from '@/base/loading/loading'
+import {playlistMixin} from '@/common/js/mixin'
+import {mapMutations} from 'vuex'
 export default {
+  mixins: [playlistMixin],
   data () {
     return {
       recommends: [],
       discList: [],
-      checkLoad: false
+      checkLoad: false,
+      discSongs: [],
+      item: []
     }
   },
   components: {
@@ -50,6 +57,19 @@ export default {
     }, 1000)
   },
   methods: {
+    handlePlaylist (playlist) {
+      setTimeout(() => {
+        const fixHeight = playlist.length > 0 ? 60 : ''
+        this.$refs.fixHeight.style.height = `${fixHeight}px`
+        this.$refs.scrollList.refresh()
+      }, 50)
+    },
+    selectItem (item) {
+      this.$router.push({
+        path: `/recommend/${item.dissid}`
+      })
+      this.setDisc(item)
+    },
     _fetchRecommend () {
       fetchRecommend(this.setComponents)
     },
@@ -57,6 +77,7 @@ export default {
       fetchDiscList(this.setDiscList).then((res) => {
         if (res.code === ERR_OK) {
           this.discList = res.data.list
+          console.log(this.discList, 'discList')
         }
       })
     },
@@ -72,10 +93,13 @@ export default {
     },
     loadImage () {
       if (!this.checkLoad) {
-        this.$refs.scroll.refresh()
+        this.$refs.scrollList.refresh()
         this.checkLoad = true
       }
-    }
+    },
+    ...mapMutations({
+      setDisc: 'SET_DISC'
+    })
   }
 }
 </script>
@@ -84,6 +108,7 @@ export default {
   .recommend{
     position: relative;
     height: 86vh;
+    box-sizing: border-box;
   }
 .list-title{
   font-size: 16px;

@@ -11,6 +11,7 @@
       <div class="song-list-wrapper">
         <song-list :songs="songs" @select="selectItem"></song-list>
         <div ref="fixScroll"></div>
+        <div ref="fixHeight"></div>
       </div>
       <div class="play-wrapper">
         <div class="play" v-show="songs.length>0" @click="random">
@@ -30,10 +31,11 @@ import SongList from '@/base/song-list/song-list'
 import {prefixStyle} from '@/api/dom'
 import Loading from '@/base/loading/loading'
 import {mapActions} from 'vuex'
+import {playlistMixin} from '@/common/js/mixin'
 const transform = prefixStyle('transform')
-const MINI_PLAYER_HEIGHT = 60
 // const backdrop = prefixStyle('backdrop-filter')
 export default {
+  mixins: [playlistMixin],
   data () {
     return {
       scrollY: 0
@@ -70,12 +72,17 @@ export default {
   mounted () {
     this.imgHeight = this.$refs.bgImg.clientHeight
     let padTop = this.imgHeight - 45
-    let fixBot = padTop + this.imgHeight + MINI_PLAYER_HEIGHT
+    let fixBot = padTop + this.imgHeight
     this.$refs.list.$el.style.paddingTop = `${padTop}px`
     this.$refs.list.$el.style.top = `45px`
     this.$refs.fixScroll.style.height = `${fixBot}px`
   },
   methods: {
+    handlePlaylist (playlist) {
+      const fixHeight = playlist.length > 0 ? 60 : ''
+      this.$refs.fixHeight.style.height = `${fixHeight}px`
+      this.$refs.list.refresh()
+    },
     returnDetail () {
       this.$router.back()
     },
@@ -118,12 +125,17 @@ export default {
 </script>
 <style scoped>
   .music-list{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
   }
   .back{
     position: absolute;
     padding:0 5px;
     top:2vh;
     left:4vw;
+    z-index: 1;
   }
   .icon-back{
     font-size:25px;
@@ -137,6 +149,7 @@ export default {
     font:normal 20px/20px "Microsoft YaHei UI",sans-serif;
     pointer-events: none;
     text-shadow: 1px 1px 2px #2e2e2e;
+    z-index: 1;
   }
 .bg-image{
   width:100vw;
@@ -145,10 +158,8 @@ export default {
   top: 0;
   left:0;
   background-size: cover;
-  z-index:-1;
-  pointer-events: none;
+  /*pointer-events: none;*/
   transform-origin: top;
-
 }
   .play-wrapper{
     position: absolute;

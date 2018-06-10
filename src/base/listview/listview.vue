@@ -3,7 +3,8 @@
     <scroll class="singer-list-wrapper" :data="data" ref="listView"
             :listenScroll="listenScroll"
             :probeType="probeType"
-            @scroll="scroll">
+            @scroll="scroll"
+    >
       <ul class="list-content">
         <li v-for="(group, index) in fixedData" :key="index" ref="listGroup">
           <h2 class="list-title">{{group.name}}</h2>
@@ -18,6 +19,7 @@
             </li>
           </ul>
         </li>
+        <li ref="fixHeight"></li>
       </ul>
       <div class="list-fixed">
       </div>
@@ -40,9 +42,12 @@ import Scroll from '@/base/scroll/scroll'
 import { singersNav } from '@/api/config'
 import { getData } from '@/api/dom'
 import Loading from '@/base/loading/loading'
+import {playlistMixin} from '@/common/js/mixin'
+
 const ANCHOR_HEIGHT = 14
 const TITLE_HEIGHT = 24
 export default {
+  mixins: [playlistMixin],
   created () {
     this.touch = {}
     this.listenScroll = true
@@ -127,6 +132,14 @@ export default {
     }
   },
   methods: {
+    handlePlaylist (playlist) {
+      console.log('inhandle')
+      setTimeout(() => {
+        const fixHeight = playlist.length > 0 ? 60 : ''
+        this.$refs.fixHeight.style.height = `${fixHeight}px`
+        this.$refs.listView.refresh()
+      }, 70)
+    },
     getIndex (item) {
       this.indexId = item.id
     },
