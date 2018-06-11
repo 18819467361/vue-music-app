@@ -29,7 +29,7 @@
 <script type="text/ecmascript-6">
 import {fetchRecommend, fetchDiscList} from 'api/recommend'
 import {ERR_OK} from 'api/config'
-import Slider from '../../base/slider.vue'
+import Slider from '../../base/slider/slider.vue'
 import Scroll from '../../base/scroll/scroll.vue'
 import Loading from '@/base/loading/loading'
 import {playlistMixin} from '@/common/js/mixin'

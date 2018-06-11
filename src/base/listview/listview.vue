@@ -133,12 +133,14 @@ export default {
   },
   methods: {
     handlePlaylist (playlist) {
-      console.log('inhandle')
-      setTimeout(() => {
+      this.$nextTick(() => {
         const fixHeight = playlist.length > 0 ? 60 : ''
+        if (!this.$refs.fixHeight) {
+          return
+        }
         this.$refs.fixHeight.style.height = `${fixHeight}px`
         this.$refs.listView.refresh()
-      }, 70)
+      })
     },
     getIndex (item) {
       this.indexId = item.id
@@ -275,6 +277,7 @@ export default {
     align-items: center;
     justify-content: center;
     z-index: 100;
+    background-color: #ffffff;
     /*background-color: transparent;*/
   }
 </style>

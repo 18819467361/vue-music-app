@@ -1,7 +1,7 @@
 <template>
   <div class="music-list">
     <div class="back">
-      <i class="icon-back" @click="returnDetail">&lt;</i>
+      <i class="icon-back iconfont" @click="returnDetail">&#xe636;</i>
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImg">
@@ -9,7 +9,7 @@
     </div>
     <scroll @scroll="scroll" :probe-type="probeType" :listen-scroll="listenScroll" :data="songs" class="list" ref="list">
       <div class="song-list-wrapper">
-        <song-list :songs="songs" @select="selectItem"></song-list>
+        <song-list :rank="rank" :songs="songs" @select="selectItem"></song-list>
         <div ref="fixScroll"></div>
         <div ref="fixHeight"></div>
       </div>
@@ -42,6 +42,10 @@ export default {
     }
   },
   props: {
+    rank: {
+      type: Boolean,
+      defalut: false
+    },
     bgImage: {
       type: String,
       default: ''
@@ -139,7 +143,7 @@ export default {
   }
   .icon-back{
     font-size:25px;
-    color: #d8cd00;
+    color: #d83e00;
   }
   .title{
     color: #ebebeb;
@@ -174,12 +178,19 @@ export default {
     border-radius: 10px;
     border: 1px solid #bc2f2e;
     color: #c7c7c7;
-    text-shadow: 1px 1px 1px #bdbdbd;
+    /*text-shadow: 1px 1px 1px #bdbdbd;*/
     z-index: -1;
+  }
+  .play{
+    background-color: rgba(195, 195, 195, 0.37);
   }
   .icon-play{
     color: #bc2f2e;
     font-size:20px;
+    font-weight: bold;
+  }
+  .text{
+    color: #dd0500;
   }
   .filter{
     width:100%;
@@ -200,15 +211,14 @@ export default {
   }
   .loading-container{
     position: absolute;
-    top:0;
+    top:38vh;
     left:0;
     width: 100vw;
-    height: 100vh;
+    height: 62vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    background-color: transparent;
+    background-color: #ffffff;
     pointer-events: none;
   }
 

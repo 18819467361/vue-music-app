@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <music-list :songs="songList" :title="title" :bg-image="bgImage"></music-list>
+    <music-list :rank="rank" :songs="songList" :title="title" :bg-image="bgImage"></music-list>
   </transition>
 </template>
 <script type="text/ecmascript-6">
@@ -13,6 +13,7 @@ import addUrl from '@/api/songUrl'
 export default {
   data () {
     return {
+      rank: true,
       songList: []
     }
   },
@@ -24,7 +25,7 @@ export default {
       return this.topList.topTitle
     },
     bgImage () {
-      return this.songList ? this.songList[0].image : this.topList.picUrl
+      return this.songList ? this.songList[0] ? this.songList[0].image : this.topList.picUrl : this.topList.picUrl
     },
     ...mapGetters([
       'topList',
@@ -36,6 +37,10 @@ export default {
   },
   methods: {
     _fetchTopMusic (id) {
+      if (!this.topList.id) {
+        // this.$router.push('/rank')
+        this.$router.back()
+      }
       fetchTopMusic(id).then((res) => {
         if (res.code === 0) {
           this.songList = this._normalizeSongs(res.songlist)

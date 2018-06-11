@@ -47,11 +47,11 @@ export default {
   }
 @font-face {
   font-family: 'iconfont';  /* project id 697934 */
-  src: url('//at.alicdn.com/t/font_697934_z8gyija5duw61or.eot');
-  src: url('//at.alicdn.com/t/font_697934_z8gyija5duw61or.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_697934_z8gyija5duw61or.woff') format('woff'),
-  url('//at.alicdn.com/t/font_697934_z8gyija5duw61or.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_697934_z8gyija5duw61or.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_697934_1qoobe9zppsyvi.eot');
+  src: url('//at.alicdn.com/t/font_697934_1qoobe9zppsyvi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_697934_1qoobe9zppsyvi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_697934_1qoobe9zppsyvi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_697934_1qoobe9zppsyvi.svg#iconfont') format('svg');
 }
 .iconfont{
   font-family:"iconfont" !important;

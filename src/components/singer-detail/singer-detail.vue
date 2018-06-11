@@ -31,7 +31,6 @@ export default {
     MusicList
   },
   created () {
-    console.log(this.singer, 'singer````')
     this._fetchSingerDetail(this.singer['singer_mid'], this.getDetailData)
   },
   methods: {
@@ -43,7 +42,6 @@ export default {
       fetchSingerDetail(singerID, callback)
     },
     getDetailData (res) {
-      console.log(res, 'vrital data')
       if (res.code === ERR_OK) {
         this.songList = this._normalizeSongs(res.data.list)
       }

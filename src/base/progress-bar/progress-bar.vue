@@ -60,7 +60,6 @@ export default {
       this.$emit('percentChange', percent)
     },
     progressClick (e) {
-      console.log(e, 'offsetX')
       // this._offset(e.offsetX)
       const rect = this.$refs.progressBar.getBoundingClientRect()
       const offsetWidth = e.pageX - rect.left

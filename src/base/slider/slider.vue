@@ -2,7 +2,8 @@
   <div class="slider">
     <v-touch @click="test" v-on:panleft="panLeft" v-on:panright="panRight">
       <div v-if="isLoad" class="slider-group">
-        <a  class="slider-link" :href="slideData[nowIndex].linkUrl">
+        <!--<a  class="slider-link" :href="slideData[nowIndex].linkUrl">-->
+        <a  class="slider-link" href="#">
           <img @load="loadImg" class="clearAbs" :src="slideData[0].picUrl"/>
           <transition :name="slideTrans">
             <img v-if="isShow" class="slider-img needsclick" :src="slideData[nowIndex].picUrl"/>
