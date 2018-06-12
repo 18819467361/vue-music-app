@@ -46,7 +46,6 @@ export default {
           this.songList = this._normalizeSongs(res.songlist)
         }
         addUrl(this.songList)
-        console.log(res, 'top list')
       })
     },
     _normalizeSongs (list) {

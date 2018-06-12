@@ -2,8 +2,10 @@
   <scroll :pullup="pullup"
           class="suggest"
           :data="result"
+          :beforeScroll="beforeScroll"
           ref="suggest"
-          @scrollToEnd="searchMore">
+          @scrollToEnd="searchMore"
+          @beforeScroll="listScroll">
     <ul class="suggest-list">
       <li @click="selectItem(item)" class="suggest-item" v-for="(item, index) in result" :key="index">
         <div class="icon" :class="getIconCls(item)" :style="bgStyle(item)">
@@ -16,6 +18,10 @@
       <div class="loading-wrapper">
         <loading v-show="hasMore" title=""></loading>
       </div>
+      <div v-show="!hasMore && !result.length" class="no-result-wrapper">
+        <no-result :title="noResultText" v-show="result.length === 0"></no-result>
+      </div>
+      <div ref="fixedScroll"></div>
     </ul>
   </scroll>
 </template>
@@ -26,23 +32,33 @@ import {ERR_OK} from '@/api/config'
 import {createSong} from '@/api/song'
 import Scroll from '@/base/scroll/scroll'
 import Loading from '@/base/loading/loading'
-import Singer from '@/api/singer'
-import {mapMutations} from 'vuex'
+import {mapMutations, mapActions} from 'vuex'
+import Singer from '@/common/js/singer.js'
+import addUrl from '@/api/songUrl'
+import NoResult from '@/base/no-result/no-result'
+import {playlistMixin} from '@/common/js/mixin'
 const TYPE_SINGER = 'singer'
 const PERPAGE = 20
 export default {
+  mixins: [playlistMixin],
   data () {
     return {
       page: 1,
       result: [],
       pullup: true,
-      hasMore: true
+      hasMore: true,
+      noResultText: '找不到歌曲...',
+      beforeScroll: true
     }
   },
   methods: {
+    handlePlaylist (playlist) {
+      const bottom = playlist.length > 0 ? '70px' : '10px'
+      this.$refs.fixedScroll.style.height = bottom
+    },
     selectItem (item) {
       if (item.type === TYPE_SINGER) {
-        const singer = new Singer({ ////有问题
+        const singer = new Singer({
           id: item.singermid,
           name: item.singername
         })
@@ -50,7 +66,10 @@ export default {
           path: `/search/${singer.id}`
         })
         this.setSinger(singer)
+      } else {
+        this.insertSong(item)
       }
+      this.$emit('select')
     },
     bgStyle (item) {
       let url = `https://y.gtimg.cn/music/photo_new/T001R68x68M000${item.singermid}.jpg?max_age=2592000`
@@ -115,7 +134,7 @@ export default {
       if (data.song) {
         ret = ret.concat(this._normalizeSong(data.song.list))
       }
-      console.log(ret, '处理后的数据')
+      addUrl(ret)
       return ret
     },
     _normalizeSong (list) {
@@ -127,9 +146,15 @@ export default {
       })
       return ret
     },
+    listScroll () {
+      this.$emit('listScroll')
+    },
     ...mapMutations({
       setSinger: 'SET_SINGER'
-    })
+    }),
+    ...mapActions([
+      'insertSong'
+    ])
 
   },
   watch: {
@@ -149,7 +174,8 @@ export default {
   },
   components: {
     Scroll,
-    Loading
+    Loading,
+    NoResult
   }
 }
 </script>
@@ -157,6 +183,7 @@ export default {
   .suggest{
     height:100%;
     overflow: hidden;
+    width:100vw;
   }
     .suggest-list{
       padding:0 30px;

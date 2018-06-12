@@ -74,6 +74,7 @@
         </div>
       </div>
     </transition>
+    <play-list ref="playList"></play-list>
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
@@ -89,7 +90,7 @@
           </progress-circle>
         </div>
         <div class="contorl">
-          <i class="icon-playlist iconfont">&#xe6a9;</i>
+          <i class="icon-playlist iconfont" @click.stop="showPlaylist">&#xe6a9;</i>
         </div>
       </div>
     </transition>
@@ -105,6 +106,7 @@ import ProgressBar from '@/base/progress-bar/progress-bar'
 import ProgressCircle from '@/base/progress-circle/progress-circle'
 import {playMode} from '@/common/js/config.js'
 import {shuffle} from '@/common/js/util.js'
+import PlayList from '@/components/playlist/playlist'
 import Lyric from 'lyric-parser'
 import Scroll from '@/base/scroll/scroll'
 const transform = prefixStyle('transform')
@@ -175,6 +177,9 @@ export default {
     }
   },
   methods: {
+    showPlaylist () {
+      this.$refs.playList.show()
+    },
     changeMode () {
       const mode = (this.mode + 1) % 3
       this.setPlayMode(mode)
@@ -444,7 +449,8 @@ export default {
   components: {
     ProgressBar,
     ProgressCircle,
-    Scroll
+    Scroll,
+    PlayList
   }
 }
 </script>
