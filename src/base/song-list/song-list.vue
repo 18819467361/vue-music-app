@@ -52,7 +52,7 @@ export default {
   .item{
     width: 100vw;
     box-sizing: border-box;
-    padding:10px 10px;
+    padding:10px 20px;
     display: flex;
     align-items: center;
   }

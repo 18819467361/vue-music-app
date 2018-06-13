@@ -4,28 +4,28 @@
       <div class="list-wrapper" @click.stop>
         <div class="list-header">
           <h1 class="title">
-            <i class="icon iconfont">&#xe680;</i>
-            <span class="text">歌曲列表</span>
-            <span class="clear"><i class="icon-clear iconfont">&#xe621;</i> </span>
+            <i class="icon iconfont" @click="changeMode" v-html="icomMode"></i>
+            <span class="text">{{modeText}}</span>
+            <span class="clear"><i class="icon-clear iconfont" @click="showConfirm">&#xe621;</i> </span>
           </h1>
         </div>
-        <scroll ref="scroll" :data="sequenceList" class="list-content">
-          <ul>
-            <li ref="listItem" class="item" v-for="(item, index) in sequenceList" :key="index"
+        <scroll ref="scroll" :refreshDelay="refreshDelay" :data="sequenceList" class="list-content">
+          <transition-group name="list" tag="ul">
+            <li ref="listItem" class="item" v-for="(item, index) in sequenceList" :key="item.id"
                 @click="selectItem(item, index)">
               <i class="current iconfont" :class="getCurrentIcon(item)">&#xe641;</i>
               <span class="text">{{item.name}}</span>
               <span class="like">
-                <i class="icon-not-favorite icon iconfont">&#xe60c;</i>
+                <i class="icon-not-favorite icon iconfont" @click.stop="toggleFavorite(item)" v-html="getFavoriteIcon(item)"></i>
               </span>
               <span class="delete">
-                <i class="icon-delete iconfont">&#xe61d;</i>
+                <i class="icon-delete iconfont" @click.stop="deleteOne(item)">&#xe61d;</i>
               </span>
             </li>
-          </ul>
+          </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click.stop="addSong">
             <i class="icon-add icon iconfont">&#xe631;</i>
             <span class="text">添加歌曲到列表</span>
           </div>
@@ -34,20 +34,38 @@
           <span>关闭</span>
         </div>
       </div>
+      <confirm ref="confirm" @confirm="confirmClear" text="是否清空播放列表" confirmBtnText="清空"></confirm>
+      <add-song ref="addSong"></add-song>
     </div>
   </transition>
 </template>
 <script type="text/ecmascript-6">
-import {mapGetters, mapMutations} from 'vuex'
+import {mapGetters, mapMutations, mapActions} from 'vuex'
 import Scroll from '@/base/scroll/scroll'
 import {playMode} from '@/common/js/config'
+import Confirm from '@/base/confirm/confirm'
+import {playerMixin} from '@/common/js/mixin'
+import AddSong from '@/components/add-song/add-song'
+
 export default {
+  mixins: [playerMixin],
   data () {
     return {
-      showFlag: false
+      showFlag: false,
+      refreshDelay: 100
     }
   },
   methods: {
+    addSong () {
+      this.$refs.addSong.show()
+    },
+    confirmClear () {
+      this.deleteSongList()
+      this.hide()
+    },
+    showConfirm () {
+      this.$refs.confirm.show()
+    },
     selectItem (item, index) {
       if (this.mode === playMode.random) {
         index = this.playlist.findIndex((song) => {
@@ -58,7 +76,7 @@ export default {
       this.setPlayingState(true)
     },
     getCurrentIcon (item) {
-      if (item.id === this.currentSong.id){
+      if (item.id === this.currentSong.id) {
         return 'playingIcon'
       }
     },
@@ -66,7 +84,9 @@ export default {
       this.showFlag = true
       setTimeout(() => {
         this.$refs.scroll.refresh()
-        this.scrollToElement(this.currentSong)
+        if (this.currentSong) {
+          this.scrollToElement(this.currentSong)
+        }
       }, 20)
     },
     hide () {
@@ -78,20 +98,27 @@ export default {
       })
       this.$refs.scroll.scrollToElement(this.$refs.listItem[index], 300)
     },
+    deleteOne (item) {
+      this.deleteSong(item)
+      if (!this.playlist.length) {
+        this.hide()
+      }
+    },
     ...mapMutations(
       {
         setCurrentIndex: 'SET_CURRENT_INDEX',
         setPlayingState: 'SET_PLAYING_STATE'
       }
-    )
+    ),
+    ...mapActions([
+      'deleteSong',
+      'deleteSongList'
+    ])
   },
   computed: {
-    ...mapGetters([
-      'sequenceList',
-      'currentSong',
-      'playlist',
-      'mode'
-    ])
+    modeText () {
+      return this.mode ===playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '单曲循环'
+    }
   },
   watch: {
     currentSong (newSong, oldSong) {
@@ -102,7 +129,9 @@ export default {
     }
   },
   components: {
-    Scroll
+    Scroll,
+    Confirm,
+    AddSong
   }
 }
 </script>
@@ -165,10 +194,12 @@ export default {
   .playingIcon{
     color: #bc2f2e !important;
   }
-  .text{
+  .item .text{
     flex:1;
     font-size: 16px;
     color: #434343;
+    max-width: 230px;
+    overflow: hidden;
   }
   .clear{
     font-size: 16px;
@@ -222,5 +253,11 @@ export default {
     background-color: #bc2f2e;
     font-size: 16px;
     color: #ffffff;
+  }
+  .list-enter-active, .list-leave-active{
+    transition: all 0.1s
+  }
+  .list-enter, .list-leave-to{
+    height: 0
   }
 </style>

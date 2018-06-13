@@ -43,7 +43,7 @@ export default {
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  width: 100vw;
+  width: 100%;
   padding:0 6px;
   height: 5vh;
   background: #ffffff;
