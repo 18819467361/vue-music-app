@@ -49,8 +49,11 @@ export default {
 }
 </script>
 <style scoped>
-  .item{
+  .song-list{
     width: 100vw;
+  }
+  .item{
+    width: 100%;
     box-sizing: border-box;
     padding:10px 20px;
     display: flex;

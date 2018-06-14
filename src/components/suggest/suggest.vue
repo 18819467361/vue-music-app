@@ -219,8 +219,9 @@ export default {
     }
   .no-result-wrapper{
     position: absolute;
-    width:100%;
+    width: 100vw;
     top:50%;
+    left:0;
     /*transform：translateY(-50%)*/
   }
   .loading-wrapper{

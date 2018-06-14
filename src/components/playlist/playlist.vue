@@ -9,21 +9,23 @@
             <span class="clear"><i class="icon-clear iconfont" @click="showConfirm">&#xe621;</i> </span>
           </h1>
         </div>
-        <scroll ref="scroll" :refreshDelay="refreshDelay" :data="sequenceList" class="list-content">
-          <transition-group name="list" tag="ul">
-            <li ref="listItem" class="item" v-for="(item, index) in sequenceList" :key="item.id"
-                @click="selectItem(item, index)">
-              <i class="current iconfont" :class="getCurrentIcon(item)">&#xe641;</i>
-              <span class="text">{{item.name}}</span>
-              <span class="like">
+        <div class="scroll-wrapper">
+          <scroll ref="scroll" :refreshDelay="refreshDelay" :data="sequenceList" class="list-content">
+            <transition-group name="list" tag="ul">
+              <li ref="listItem" class="item" v-for="(item, index) in sequenceList" :key="item.id"
+                  @click="selectItem(item, index)">
+                <i class="current iconfont" :class="getCurrentIcon(item)">&#xe641;</i>
+                <span class="text">{{item.name}}</span>
+                <span class="like">
                 <i class="icon-not-favorite icon iconfont" @click.stop="toggleFavorite(item)" v-html="getFavoriteIcon(item)"></i>
               </span>
-              <span class="delete">
+                <span class="delete">
                 <i class="icon-delete iconfont" @click.stop="deleteOne(item)">&#xe61d;</i>
               </span>
-            </li>
-          </transition-group>
-        </scroll>
+              </li>
+            </transition-group>
+          </scroll>
+        </div>
         <div class="list-operate">
           <div class="add" @click.stop="addSong">
             <i class="icon-add icon iconfont">&#xe631;</i>
@@ -209,10 +211,15 @@ export default {
     font-size: 18px;
     color: #bc2f2e;
   }
-  .list-content{
-    position: relative;
+  .scroll-wrapper{
+    position: absolute;
+    top: 65px;
     height:240px;
+    width:100%;
     overflow: hidden;
+  }
+  .list-content{
+    width: 100%;
   }
   .item{
     display: flex;
@@ -240,9 +247,11 @@ export default {
     color: #3a3a3a;
   }
   .list-operate{
-    position: relative;
+    position: absolute;
+    bottom: 55px;
+    left:50%;
     width:140px;
-    margin:20px auto 50px auto;
+    margin:20px auto 0 -70px;
   }
   .list-close{
     text-align: center;

@@ -7,17 +7,38 @@
     <div class="switches-wrapper">
       <switches :currentIndex="currentIndex" :switches="switches" @switch="switchItem"></switches>
     </div>
-    <div ref="playBtn" class="play-btn">
+    <div ref="playBtn" class="play-btn" @click="random">
       <i class="icon-play iconfont">&#xe641;</i>
       <span class="text">随机播放全部</span>
     </div>
-    <div class="list-wrapper" ref="listWrapper"></div>
+    <div class="list-wrapper" ref="listWrapper">
+      <scroll ref="favoriteList" class="list-scroll" v-if="currentIndex===0" :data="favoriteList">
+        <div class="list-inner">
+          <song-list :songs="favoriteList" @select="selectSong"></song-list>
+          <div ref="fixScroll"></div>
+        </div>
+      </scroll>
+      <scroll ref="playList" class="list-scroll" v-if="currentIndex === 1" :data="playHistory">
+        <div class="list-inner">
+          <song-list :songs="playHistory" @select="selectSong"></song-list>
+          <div ref="fixScroll"></div>
+        </div>
+      </scroll>
+    </div>
+    <no-result v-show="noResult()" :title="noResultDesc()"></no-result>
   </div>
 </transition>
 </template>
 <script type="text/ecmascript-6">
 import Switches from '@/base/switches/switches'
+import {mapGetters, mapActions} from 'vuex'
+import Scroll from '@/base/scroll/scroll'
+import SongList from '@/base/song-list/song-list'
+import Song from '@/api/song'
+import {playlistMixin} from '@/common/js/mixin'
+import NoResult from '@/base/no-result/no-result'
 export default {
+  mixins: [playlistMixin],
   data () {
     return {
       currentIndex: 0,
@@ -29,15 +50,63 @@ export default {
     }
   },
   methods: {
+    noResult () {
+      if (this.currentIndex === 0) {
+        return !this.favoriteList
+      } else {
+        return !this.playHistory
+      }
+    },
+    noResultDesc () {
+      if (this.currentIndex === 0) {
+        return '暂无收藏歌曲'
+      } else {
+        return '暂无听过歌曲'
+      }
+    },
+    handlePlaylist (playlist) {
+      const height = playlist.length > 0 ? '60px' : '0'
+      this.$refs.fixScroll.style.height = height
+      this.$refs.favoriteList && this.$refs.favoriteList.refresh()
+      this.$refs.playList && this.$refs.playList.refresh()
+    },
+    random () {
+      let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
+      if (list.length === 0) {
+        return
+      }
+      list = list.map((song) => {
+        return new Song(song)
+      })
+      this.randomPlay({list})
+    },
+    selectSong (song, index) {
+      if (index !== 0) {
+        this.insertSong(new Song(song))
+      }
+    },
     switchItem (index) {
       this.currentIndex = index
     },
     back () {
       this.$router.back()
-    }
+    },
+    ...mapActions([
+      'insertSong',
+      'randomPlay'
+    ])
+  },
+  computed: {
+    ...mapGetters([
+      'favoriteList',
+      'playHistory'
+    ])
   },
   components: {
-    Switches
+    Switches,
+    Scroll,
+    SongList,
+    NoResult
   }
 }
 </script>
@@ -102,9 +171,10 @@ export default {
   .list-scroll{
     height:100%;
     overflow: hidden;
+    width:100%;
   }
   .list-inner{
-    padding:20px 30px;
+    padding:20px 0;
   }
   .no-result-wrapper{
     position: absolute;

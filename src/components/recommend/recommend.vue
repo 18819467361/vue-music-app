@@ -77,7 +77,6 @@ export default {
       fetchDiscList(this.setDiscList).then((res) => {
         if (res.code === ERR_OK) {
           this.discList = res.data.list
-          console.log(this.discList, 'discList')
         }
       })
     },

@@ -18,7 +18,6 @@ export default {
 .no-result{
   width: 100vw;
   padding-top: 120px;
-  margin-left: -30px;
 }
 .no-result-icon{
   font-size: 50px;
