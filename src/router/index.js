@@ -1,15 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Recommend from 'components/recommend/recommend'
-// import Singer from '../components/singer/singer.vue'
-// import Search from '../components/search/search.vue'
-// import Rank from '../components/rank/rank.vue'
-// import SingerDetail from '../components/singer-detail/singer-detail.vue'
-// import Disc from '../components/disc/disc.vue'
-// import TopList from '../components/top-list/top-list.vue'
-// import UserCenter from '../components/user-center/user-center.vue'
 Vue.use(Router)
-
+// 路由懒加载，异步加载
 const Recommend = (resolve) => {
   import('components/recommend/recommend').then((module) => {
     resolve(module)

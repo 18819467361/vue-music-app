@@ -73,7 +73,7 @@ export default {
   .rank {
     position: fixed;
     width: 100%;
-    top: 88px;
+    top: 14vh;
     bottom: 0;
   }
 

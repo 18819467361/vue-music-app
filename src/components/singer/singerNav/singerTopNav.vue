@@ -36,6 +36,5 @@ export default {
   }
   .active{
     border-bottom: 1px solid #bc2f2e;
-    border-right: 1px solid #bc2f2e;
   }
 </style>

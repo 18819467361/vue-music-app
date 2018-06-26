@@ -101,7 +101,7 @@ export default {
         this._calculateHeight()// data变化导致dom变化，实时更新高度，数据变化到dom变化有延时，因此延时20ms调用。
       }, 20)
     },
-    scrollY (newY) {
+    scrollY (newY) { // 监听列表的scrollY变化，listHeight高度区间，确定当前的currentIndex，设置shortcut的高亮
       const listHeight = this.listHeight
       // 当滚动到顶部newY>0
       if (newY > 0) {
@@ -113,17 +113,17 @@ export default {
         let height1 = listHeight[i]
         let height2 = listHeight[i + 1]
         if (-newY >= height1 && -newY < height2) {
-          this.currentIndex = i
-          this.diff = height2 + newY
+          this.currentIndex = i // newY 是当前
+          this.diff = height2 + newY // diff 为分类、热门、A标题栏到元素顶端的距离
           return
         }
       }
       // 当滚动到底部，且-newY大于最后一个元素的上限
       this.currentIndex = listHeight.length - 2
     },
-    diff (newVal) {
+    diff (newVal) { // 监听diff，修改fixedTitle的位置
       let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
-      /* 减少dom操作频率 */
+      /* 0的情况，减少dom操作频率 */
       if (this.fixedTop === fixedTop) {
         return
       }
@@ -148,6 +148,7 @@ export default {
     onShortcutTouchStart (e) {
       let anchorIndex = getData(e.target, 'index')
       let firstTouch = e.touches[0]
+      // console.log(e, 'touch el')
       this.touch.y1 = firstTouch.pageY
       this.touch.anchorIndex = anchorIndex
       this._scrollTo(anchorIndex)
@@ -163,10 +164,10 @@ export default {
       if (!index && index !== 0) {
         return
       }
-      this.scrollY = -this.listHeight[index]
+      this.scrollY = -this.listHeight[index] // scrollY 是当前列表scroll的高度
       this.$refs.listView.scrollToElement(this.$refs.listGroup[index], 0)
     },
-    scroll (pos) {
+    scroll (pos) { // 监听better-scroll 的emit ，回传参数pos，获取当前列表scrollY的高度
       this.scrollY = pos.y
     },
     _calculateHeight () {
@@ -198,7 +199,7 @@ export default {
  .list-title{
    text-align: left;
    padding:4px 0 4px 10px;
-   margin:0 3vh 6px 4px;
+   margin:0 3vw 6px 4px;
    background-color: #ca7374;
    font:bold 16px/16px sans-serif;
    color: #fff;

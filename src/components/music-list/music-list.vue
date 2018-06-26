@@ -100,7 +100,6 @@ export default {
       })
     },
     random () {
-      console.log('random')
       this.randomPlay({
         list: this.songs
       })
